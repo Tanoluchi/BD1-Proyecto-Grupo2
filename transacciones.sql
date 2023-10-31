@@ -1,3 +1,8 @@
+/*----------------------------------------
+SCRIPT APLICADO A LAS PRUEBAS PRACTICAS SOBRE TRANSACCIONES
+BASE DE DATOS 1 - COMISION 3
+GRUPO 2
+----------------------------------------*/
 -- USE base_consorcio;
 
 -- CREACION DE LAS TRANSACCIONES
