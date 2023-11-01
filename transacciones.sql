@@ -143,6 +143,15 @@ END CATCH
 
 -----------------------------------------------
 -----------------------------------------------
+-- LAS SIGUIENTES CONSULTAS VERIFICAN LOS RESULTADOS DE LAS PRUEBAS SOBRE TRANSACCIONES ANIDADAS 
+-----------------------------------------------
+ -- NOS MUESTAR CUAL FUE EL ULTIMO REGISTRO DE ADMINISTRADOR CARGADO
+SELECT TOP 1 * FROM administrador ORDER BY idadmin DESC; 
 
+ -- MUESTRA LOS DATOS DEL CONSORCIO CON LA DIRECCION EN CUESTION (EXITE O NO)
+SELECT * FROM consorcio WHERE direccion = 'PARAGUAY N 999';
 
+-- MUESTAR LOS ULTIMOS 3 REGISTROS DE GASTOS CARGADOS
+SELECT TOP 4 * FROM gasto ORDER BY idgasto DESC; 
+-----------------------------------------------
 
