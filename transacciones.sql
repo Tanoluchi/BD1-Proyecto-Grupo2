@@ -155,3 +155,69 @@ SELECT * FROM consorcio WHERE direccion = 'PARAGUAY N 999';
 SELECT TOP 4 * FROM gasto ORDER BY idgasto DESC; 
 -----------------------------------------------
 
+
+----- Implementacion de Backup y restore. Backup en línea.
+
+
+
+
+
+
+----- Implementacion de Índices columnares en SQL server
+
+
+
+
+
+
+
+----- Implementacion de Índices Optimización de consultas a través de índices.
+
+
+
+
+
+
+---Implementacion de Vistas y vistas indexadas
+
+
+
+
+
+
+
+---Implementacion de Triggers de auditoría
+
+
+
+
+
+
+
+---Implementacion de Manejo de permisos a nivel de usuarios de base de datos
+
+
+
+
+
+---Implementacion de Procedimientos y funciones almacenadas
+
+
+
+
+
+
+---Implementacion de Réplicas de base de datos
+
+
+
+
+
+
+
+
+
+
+
+
+
