@@ -188,15 +188,107 @@ SELECT TOP 4 * FROM gasto ORDER BY idgasto DESC;
 
 ---Implementacion de Triggers de auditoría
 
+--PRIMER EJECUCION DE CONSULTA -----------------------------------------------------------------
+--Permite ver detalle de los tiempos de ejecucionde la consulta
+SET STATISTICS TIME ON;
+SET STATISTICS IO ON;
+go;
+--Consulta: Gastos del periodo 8 
+
+SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
+FROM gasto g
+INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
+WHERE g.periodo = 8 ;
+go;
 
 
+--SEGUNDA EJECUCION DE CONSULTA ----------------------------------------------------------------------------
 
+--SqlServer toma la PK de gasto como indice CLUSTERED, asique para crear el solicitado en periodo debemos primero eliminar el actual
+ALTER TABLE gasto
+DROP CONSTRAINT PK_gasto;
+go;
+
+--Transformamos la PK en un indice NONCLUSTERED
+ALTER TABLE gasto
+ADD CONSTRAINT PK_gasto PRIMARY KEY NONCLUSTERED (idGasto);
+go;
+
+--Creamos un nuevo indice CLUSTERED en periodo
+CREATE CLUSTERED INDEX IX_gasto_periodo
+ON gasto (periodo);
+go;
+--Permite ver detalle de los tiempos de ejecucionde la consulta
+SET STATISTICS TIME ON;
+SET STATISTICS IO ON;
+go;
+--Consulta: Gastos del periodo 8 
+
+SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
+FROM gasto g
+INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
+WHERE g.periodo = 8 ;
+go;
+
+
+--TERCER EJECUCION DE CONSULTA------------------------------------------------------------------
+-- Elimina el índice agrupado anterior
+DROP INDEX IX_gasto_periodo ON gasto;
+go;
+
+-- Crea un nuevo índice agrupado en periodo, fechapago e idtipogasto
+CREATE CLUSTERED INDEX IX_Gasto_Periodo_FechaPago_idTipoGasto
+ON gasto (periodo, fechapago, idtipogasto);
+go;
+
+--Permite ver detalle de los tiempos de ejecucionde la consulta
+SET STATISTICS TIME ON;
+SET STATISTICS IO ON;
+go;
+--Consulta: Gastos del periodo 8 
+
+SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
+FROM gasto g
+INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
+WHERE g.periodo = 8 ;
+go;
 
 
 
 ---Implementacion de Manejo de permisos a nivel de usuarios de base de datos
 
+go
+create login benn with password='Password123';
+create login artur with password='Password123';
 
+--creamos usuarios con los long in anteriores
+create user benn for login benn
+create user artur for login artur
+--asignamos roles a los usuarios
+alter role db_datareader add member benn
+alter role db_ddladmin add artur
+
+go
+-- creamos el procedimiento insertarAdministrador
+create procedure insertarAdministrador
+@apeynom varchar(50),
+@viveahi varchar(1),
+@tel varchar(20),
+@s varchar(1),
+@nacimiento datetime
+as
+begin
+	insert into administrador(apeynom,viveahi,tel,sexo,fechnac)
+	values (@apeynom,@viveahi,@tel,@s,@nacimiento);
+end
+
+--probar con benn antes del permiso 
+--insert into administrador(apeynom,viveahi,tel,sexo,fechnac) values ('Lezana mauricio','S','3912819222','M','2003-05-26')
+--exec  insertarAdministrador 'Lezana mauricio','S','3912819222','M','2003-05-26'
+grant execute on insertarAdministrador to benn 
+--probar despues de el permiso 
+--exec  insertarAdministrador 'Lezana mauricio','S','3912819222','M','2003-05-26'
+select * from administrador
 
 
 
