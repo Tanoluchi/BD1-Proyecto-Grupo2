@@ -615,13 +615,205 @@ select * from administrador
 
 ----------------------------------------------- Implementacion de Procedimientos y funciones almacenadas -----------------------------------------------
 
+CREATE PROCEDURE InsertarAdministrador
+(
+    @apeynom varchar(50),
+    @viveahi varchar(1),
+    @tel varchar(20),
+    @sexo varchar(1),
+    @fechnac datetime
+)
+AS
+BEGIN
+    INSERT INTO administrador (apeynom, viveahi, tel, sexo, fechnac)
+    VALUES (@apeynom, @viveahi, @tel, @sexo, @fechnac);
+END
+
+CREATE PROCEDURE ModificarAdministrador
+(
+    @idadmin int,
+    @apeynom varchar(50),
+    @viveahi varchar(1),
+    @tel varchar(20),
+    @sexo varchar(1),
+    @fechnac datetime
+)
+AS
+BEGIN
+    UPDATE administrador
+    SET apeynom = @apeynom,
+        viveahi = @viveahi,
+        tel = @tel,
+        sexo = @sexo,
+        fechnac = @fechnac
+    WHERE idadmin = @idadmin;
+END
+
+CREATE PROCEDURE BorrarAdministrador
+(
+    @idadmin int
+)
+AS
+BEGIN
+    DELETE FROM administrador
+    WHERE idadmin = @idadmin;
+END
+
+-- Lote de Pruebas --
+
+-- Vaciar la tabla Administrador:
+DELETE FROM administrador;
+
+-- Insertar datos utilizando el procedimiento almacenado correspondiente:
+EXEC InsertarAdministrador 'Julian Cruz', 'S', '3795024422', 'M', '17-02-1997';
+
+-- Modificar datos de un administrador utilizando el procedimiento almacenado correspondiente:
+EXEC ModificarAdministrador 1, 'Julian Luis Cruz', 'N', '112443434', 'M', '17-02-1997';
+
+-- Eliminacion de datos de un administrador utilizando el procedimiento almacenado correspondiente:
+EXEC BorrarAdministrador 1;
 
 
+USE base_consorcio
+GO
+
+CREATE PROCEDURE agregarConsorcio
+@Provincia INT,
+@Localidad INT,
+@Consorcio INT, 
+@Nombre VARCHAR(50),
+@Direccion VARCHAR(255),
+@Zona INT,
+@Conserje INT,
+@Admin INT
+
+      AS
+BEGIN
+		INSERT INTO consorcio(idprovincia,idlocalidad,idconsorcio,nombre,direccion, idzona,idconserje,idadmin) 
+			VALUES (@Provincia,@Localidad,@Consorcio,@Nombre,@Direccion, @Zona, @Conserje, @Admin)
+					
+END  
+
+CREATE PROCEDURE modificarConsorcio
+@Provincia INT,
+@Localidad INT,
+@Consorcio INT, 
+@Nombre VARCHAR(50),
+@Direccion VARCHAR(255),
+@Zona INT,
+@Conserje INT,
+@Admin INT
+
+      AS
+BEGIN
+
+	IF @Consorcio IS NOT NULL
+		UPDATE consorcio SET idprovincia= @Provincia, idlocalidad= @Localidad,nombre= @Nombre,direccion= @Direccion,idzona= @Zona, 
+		idconserje= @Conserje,idadmin= @Admin
+		WHERE idconsorcio= @Consorcio
+END
+
+CREATE PROCEDURE eliminarConsorcio
+@Consorcio INT
+
+AS
+BEGIN
+
+	DELETE FROM consorcio WHERE idconsorcio=@Consorcio
+END
+
+/*EXECUTE agregarConsorcio @Provincia=5, @Localidad=6, @Consorcio= 50, @Nombre='Nicolás', @Direccion='General Viamonte 1658', @Zona=3,@Conserje='2',@Admin=1
+SELECT * FROM consorcio WHERE idConsorcio=50 */
+/*EXECUTE modificarConsorcio @Provincia=6, @Localidad=5, @Consorcio= 50, @Nombre='Anibal', @Direccion='Juan Jose Castelli 1217', @Zona=4, @Conserje='1', @Admin=2
+SELECT * FROM consorcio WHERE idConsorcio=50 
+DELETE FROM consorcio WHERE idconsorcio=50*/
+/*EXECUTE eliminarConsorcio @Consorcio=50
+SELECT * FROM consorcio WHERE idconsorcio=50 */
+
+----Procedimiento insertar registro de la tabla gastos
+CREATE PROCEDURE InsertarGasto(
+    @idprovincia INT,
+    @idlocalidad INT,
+    @idconsorcio INT,
+    @periodo INT,
+    @fechapago DATETIME,
+    @idtipogasto INT,
+    @importe DECIMAL(8, 2)
+)
+AS
+BEGIN
+    INSERT INTO gasto (idprovincia, idlocalidad, idconsorcio, periodo, fechapago, idtipogasto, importe)
+    VALUES (@idprovincia, @idlocalidad, @idconsorcio, @periodo, @fechapago, @idtipogasto, @importe);
+END;
+----FIN INSERTARGASTOS
+
+----Procedimiento modificar registro de la tabla gastos
+CREATE PROCEDURE ModificarGasto
+(
+    @idgasto INT,
+    @idprovincia INT,
+    @idlocalidad INT,
+    @idconsorcio INT,
+    @periodo INT,
+    @fechapago DATETIME,
+    @idtipogasto INT,
+    @importe DECIMAL(8, 2)
+)
+AS
+BEGIN
+    UPDATE gasto
+    SET
+        idprovincia = @idprovincia,
+        idlocalidad = @idlocalidad,
+        idconsorcio = @idconsorcio,
+        periodo = @periodo,
+        fechapago = @fechapago,
+        idtipogasto = @idtipogasto,
+        importe = @importe
+    WHERE idgasto = @idgasto;
+END;
+
+----FIN MODIFICARGASTOS
 
 
+----Procedimiento borrar registro de la tabla gastos
+CREATE PROCEDURE BorrarGasto
+(
+    @idgasto INT
+)
+AS
+BEGIN
+    DELETE FROM gasto
+    WHERE idgasto = @idgasto;
+END;
 
------------------------------------------------ Implementacion de Réplicas de base de datos -----------------------------------------------
+----FIN BORRARGASTOS
 
+
+-- Inserción de datos en la tabla gasto utilizando sentencias INSERT
+INSERT INTO gasto (idprovincia, idlocalidad, idconsorcio, periodo, fechapago, idtipogasto, importe)
+VALUES
+    (24, 17, 6, 8, convert(datetime,'20231029'), 4, 100.50),
+    (24, 17, 6, 3, convert(datetime,'20231030'), 4, 150.75),
+    (24, 17, 6, 4, convert(datetime,'20231101'), 5, 75.25);
+---FIN de la insercion de datos utilizando sentencias INSERT	
+
+
+-- Invocación de procedimientos almacenados para insertar datos
+EXEC InsertarGasto 24, 17, 6, 8, '20231102', 4, 80.00;
+EXEC InsertarGasto 24, 17, 6, 3, '20231103', 5, 60.25;
+
+---FIN de la invocación de procedimientos almacenados para insertar datos
+
+---Actualización de un registro utilizando el procedimiento almacenado
+EXEC ModificarGasto @idgasto = 1, @idprovincia = 24, @idlocalidad = 17, @idconsorcio = 6, @periodo = 8, @fechapago = '20240115', @idtipogasto = 4, @importe = 120.00;
+
+---FIN de la invocación de procedimientos almacenados para actualización de un registro
+
+---Eliminación de un registro utilizando el procedimiento almacenado
+EXEC BorrarGasto @idgasto = 2;
+
+---FIN de la invocación de procedimientos almacenados para la eliminación de un registro
 
 
 
