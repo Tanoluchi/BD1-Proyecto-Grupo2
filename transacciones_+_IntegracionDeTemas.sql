@@ -445,7 +445,7 @@ INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
 WHERE g.periodo = 8;
 
 
------------------------------------------------ Implementacion de Manejo de permisos a nivel de usuarios de base de datos -----------------------------------------------
+----------------------------------------------- IMPLEMENTACION DE MANEJO DE PERMISOS A NIVEL DE USUARIOS DE BASE DE DATOS -----------------------------------------------
 
 USE base_consorcio;
 
@@ -607,7 +607,7 @@ select * from administrador
 
 
 
------------------------------------------------ Implementacion de Procedimientos y funciones almacenadas -----------------------------------------------
+----------------------------------------------- IMPLEMENTACION DE PROCEDIMIENTOS Y FUNCIONES ALMACENADAS -----------------------------------------------
 
 CREATE PROCEDURE InsertarAdministrador
 (
