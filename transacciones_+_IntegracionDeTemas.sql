@@ -364,7 +364,7 @@ WHERE RowNumber BETWEEN 1 AND 1000000;
 
 
 
------------------------------------------------ Implementacion de Triggers de auditoría -----------------------------------------------
+----------------------------------------------- Implementacion de optimización de consultas a través de índices -----------------------------------------------
 
 --PRIMER EJECUCION DE CONSULTA -----------------------------------------------------------------
 --Permite ver detalle de los tiempos de ejecucionde la consulta
