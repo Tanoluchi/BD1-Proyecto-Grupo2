@@ -157,7 +157,7 @@ SELECT TOP 4 * FROM gasto ORDER BY idgasto DESC;
 
 
 
------------------------------------------------ Implementacion de Backup y restore. Backup en línea. -----------------------------------------------
+----------------------------------------------- IMPLEMENTACION DE BACKUP Y RESTORE. BACKUP EN LÍNEA. -----------------------------------------------
 -- 1 Verificar el modo de recuperacion de la base de datos
 use base_consorcio
 
@@ -285,7 +285,7 @@ select * from gasto
 
 
 
------------------------------------------------ Implementacion de Índices columnares en SQL server -----------------------------------------------
+----------------------------------------------- IMPLEMENTACION DE ÍNDICES COLUMNARES EN SQL SERVER -----------------------------------------------
 --- Creacion de la tabla.
 Create table gastoNew	(
 						idgastoNew int identity,
@@ -364,7 +364,7 @@ WHERE RowNumber BETWEEN 1 AND 1000000;
 
 
 
------------------------------------------------ Implementacion de optimización de consultas a través de índices -----------------------------------------------
+----------------------------------------------- IMPLEMENTACION DE OPTIMIZACIÓN DE CONSULTAS A TRAVÉS DE ÍNDICES -----------------------------------------------
 
 -- Permiten ver en detalle los tiempos de ejecucion de las consultas
 SET STATISTICS TIME ON;
