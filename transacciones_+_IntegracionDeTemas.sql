@@ -366,71 +366,83 @@ WHERE RowNumber BETWEEN 1 AND 1000000;
 
 ----------------------------------------------- Implementacion de optimización de consultas a través de índices -----------------------------------------------
 
---PRIMER EJECUCION DE CONSULTA -----------------------------------------------------------------
---Permite ver detalle de los tiempos de ejecucionde la consulta
+-- Permiten ver en detalle los tiempos de ejecucion de las consultas
 SET STATISTICS TIME ON;
 SET STATISTICS IO ON;
 go;
---Consulta: Gastos del periodo 8 
 
+
+/* Realizar una carga masiva de por lo menos 1 millón de registro sobre la tabla gasto. 
+Se pueden repetir los registros ya existentes. Hacerlo con un script para poder compartirlo.*/
+
+-- Se ejecuta la carga masiva de datos
+INSERT INTO gasto (idprovincia, idlocalidad, idconsorcio, periodo,
+fechapago, idtipogasto, importe)
+SELECT TOP 100000
+ 24,4,1,8,'20170810',3,60321.49
+FROM sys.objects a
+CROSS JOIN sys.objects b;
+SELECT count(*) FROM [dbo].[gasto];
+
+-----------------------------------------------------------------------------------------------
+
+/* Realizar una búsqueda por periodo, seleccionando los campos: fecha de pago y tipo de gasto 
+(con la descripción correspondiente). Registrar el plan de ejecución utilizado por el motor y
+los tiempos de respuesta.*/
+
+--Consulta: Gastos del periodo 8
 SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
 FROM gasto g
 INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
-WHERE g.periodo = 8 ;
-go;
+WHERE g.periodo = 8;
+-- TIEMPO DE RESPUESTA: 
 
+-----------------------------------------------------------------------------------------------
 
---SEGUNDA EJECUCION DE CONSULTA ----------------------------------------------------------------------------
+/* Definir un índice agrupado sobre la columna periodo y repetir la consulta anterior. 
+Como el  CLUSTERED tomado por defecto por SQLServer es la PRIMARY KEY de la tabla gasto, primero 
+se debe debe eliminar la restriccion crear el indice deseado*/
 
---SqlServer toma la PK de gasto como indice CLUSTERED, asique para crear el solicitado en periodo debemos primero eliminar el actual
 ALTER TABLE gasto
 DROP CONSTRAINT PK_gasto;
-go;
 
---Transformamos la PK en un indice NONCLUSTERED
-ALTER TABLE gasto
-ADD CONSTRAINT PK_gasto PRIMARY KEY NONCLUSTERED (idGasto);
-go;
-
---Creamos un nuevo indice CLUSTERED en periodo
-CREATE CLUSTERED INDEX IX_gasto_periodo
+-- Se crea un nuevo indice CLUSTERED en periodo bajo el nombre de IC_gasto_periodo
+CREATE CLUSTERED INDEX IC_gasto_periodo
 ON gasto (periodo);
-go;
---Permite ver detalle de los tiempos de ejecucionde la consulta
-SET STATISTICS TIME ON;
-SET STATISTICS IO ON;
-go;
---Consulta: Gastos del periodo 8 
 
+
+-- Nuevamente, repetimos la consulta anterior para evaluar los resultados ahora que se creo el
+-- nuevo indice agrupado
+
+--Consulta: Gastos del periodo 8
 SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
 FROM gasto g
 INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
-WHERE g.periodo = 8 ;
+WHERE g.periodo = 8;
+-- TIEMPO DE RESPUESTA: 
+
+-----------------------------------------------------------------------------------------------
+
+/* Definir otro índice agrupado sobre la columna periodo pero que además incluya las columnas:
+ Fecha de pago y tipo de gasto y repetir la consulta anterior. */
+
+-- Nuevamente, se elimina el índice agrupado anterior
+DROP INDEX IC_gasto_periodo ON gasto;
 go;
 
+-- Se crea un nuevo índice agrupado con periodo, fechapago e idtipogasto
 
---TERCER EJECUCION DE CONSULTA------------------------------------------------------------------
--- Elimina el índice agrupado anterior
-DROP INDEX IX_gasto_periodo ON gasto;
-go;
-
--- Crea un nuevo índice agrupado en periodo, fechapago e idtipogasto
-CREATE CLUSTERED INDEX IX_Gasto_Periodo_FechaPago_idTipoGasto
+CREATE CLUSTERED INDEX IC_Gasto_Periodo_FechaPago_idTipoGasto
 ON gasto (periodo, fechapago, idtipogasto);
 go;
 
---Permite ver detalle de los tiempos de ejecucionde la consulta
-SET STATISTICS TIME ON;
-SET STATISTICS IO ON;
-go;
---Consulta: Gastos del periodo 8 
+-- Se repite la consulta para poder ver los resultados obtenidos al ejecutar tras la creación del
+-- nuevo indice agrupado.
 
 SELECT g.idgasto, g.periodo, g.fechapago, t.descripcion
 FROM gasto g
 INNER JOIN tipogasto t ON g.idtipogasto = t.idtipogasto
-WHERE g.periodo = 8 ;
-go;
-
+WHERE g.periodo = 8;
 
 
 ----------------------------------------------- Implementacion de Manejo de permisos a nivel de usuarios de base de datos -----------------------------------------------
